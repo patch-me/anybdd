@@ -1,6 +1,5 @@
 pub mod models;
 pub mod schema;
-use anybdd::schema::projects;
 use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
 use dotenvy::dotenv;
@@ -9,12 +8,14 @@ use std::env;
 
 fn main() {
     use self::schema::projects::dsl::*;
-    let connection = &mut establish_connection();
+    let connection: &mut MysqlConnection = &mut establish_connection();
 
-    let results = projects
+    let results: Vec<Project> = projects
         .select(Project::as_select())
         .load(connection)
         .expect("Error loading projects");
+    println!("{:?}", results);
+
 }
 pub fn establish_connection() -> MysqlConnection {
     dotenv().ok();

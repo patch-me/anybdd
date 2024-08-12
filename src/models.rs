@@ -1,6 +1,7 @@
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 
+#[derive(Debug)]
 #[derive(Queryable, Selectable)]
 #[diesel(table_name = crate::schema::projects)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
