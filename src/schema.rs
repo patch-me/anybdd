@@ -53,6 +53,13 @@ diesel::table! {
 }
 
 diesel::table! {
+    user_tasks (user_id, task_id) {
+        user_id -> Integer,
+        task_id -> Integer,
+    }
+}
+
+diesel::table! {
     users (id) {
         id -> Integer,
         #[max_length = 255]
@@ -69,6 +76,8 @@ diesel::joinable!(task_tags -> tags (tag_id));
 diesel::joinable!(task_tags -> tasks (task_id));
 diesel::joinable!(user_projects -> projects (project_id));
 diesel::joinable!(user_projects -> users (user_id));
+diesel::joinable!(user_tasks -> tasks (task_id));
+diesel::joinable!(user_tasks -> users (user_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     project_tasks,
@@ -77,5 +86,6 @@ diesel::allow_tables_to_appear_in_same_query!(
     task_tags,
     tasks,
     user_projects,
+    user_tasks,
     users,
 );
