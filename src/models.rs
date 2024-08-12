@@ -13,6 +13,7 @@ pub struct Project {
     pub updated_at: NaiveDateTime,
 }
 
+#[derive(Debug)]
 #[derive(Queryable, Selectable)]
 #[diesel(table_name = crate::schema::users)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
@@ -24,6 +25,7 @@ pub struct User {
     pub updated_at: NaiveDateTime,
 }
 
+#[derive(Debug)]
 #[derive(Queryable, Selectable)]
 #[diesel(table_name = crate::schema::user_projects)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
@@ -32,6 +34,7 @@ pub struct UserProject {
     pub project_id: i32,
 }
 
+#[derive(Debug)]
 #[derive(Queryable, Selectable)]
 #[diesel(table_name = crate::schema::tasks)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
@@ -44,6 +47,7 @@ pub struct Task {
     pub updated_at: NaiveDateTime,
 }
 
+#[derive(Debug)]
 #[derive(Queryable, Selectable)]
 #[diesel(table_name = crate::schema::project_tasks)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
@@ -52,6 +56,7 @@ pub struct ProjectTask {
     pub task_id: i32,
 }
 
+#[derive(Debug)]
 #[derive(Queryable, Selectable)]
 #[diesel(table_name = crate::schema::user_tasks)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
@@ -60,6 +65,7 @@ pub struct UserTask {
     pub task_id: i32,
 }
 
+#[derive(Debug)]
 #[derive(Queryable, Selectable)]
 #[diesel(table_name = crate::schema::tags)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
@@ -68,6 +74,7 @@ pub struct Tag {
     pub name: String,
 }
 
+#[derive(Debug)]
 #[derive(Queryable, Selectable)]
 #[diesel(table_name = crate::schema::task_tags)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
