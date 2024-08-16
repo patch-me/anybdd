@@ -21,7 +21,7 @@ pub struct NewProject {
     pub updated_at: NaiveDateTime,
 }
 
-#[derive(Debug, Queryable, Selectable)]
+#[derive(Debug, Queryable, Selectable, AsChangeset)]
 #[diesel(table_name = crate::schema::users)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 pub struct User {
