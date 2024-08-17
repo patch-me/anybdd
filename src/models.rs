@@ -86,7 +86,7 @@ pub struct UserTask {
     pub task_id: i32,
 }
 
-#[derive(Debug, Queryable, Selectable)]
+#[derive(Debug, Queryable, Selectable, AsChangeset)]
 #[diesel(table_name = crate::schema::tags)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 pub struct Tag {
