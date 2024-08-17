@@ -3,9 +3,9 @@ use crate::schema::users;
 use crate::{Delete, Get, Patch, Post};
 use diesel::mysql::MysqlConnection;
 use diesel::result::Error;
-use diesel::{connection, delete, insert_into, prelude::*, update};
+use diesel::{delete, insert_into, prelude::*, update};
 
-struct UserService;
+pub struct UserService;
 
 impl Get<User> for UserService {
     fn get(connection: &mut MysqlConnection) -> Result<Vec<User>, Error> {
