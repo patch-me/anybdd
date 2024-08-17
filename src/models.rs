@@ -1,7 +1,6 @@
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 
-#[derive(Debug, Queryable, Selectable)]
 #[derive(Debug, Queryable, Selectable, AsChangeset)]
 #[diesel(table_name = crate::schema::projects)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
@@ -49,7 +48,7 @@ pub struct UserProject {
     pub project_id: i32,
 }
 
-#[derive(Debug, Queryable, Selectable)]
+#[derive(Debug, Queryable, Selectable, AsChangeset)]
 #[diesel(table_name = crate::schema::tasks)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 pub struct Task {
@@ -60,7 +59,7 @@ pub struct Task {
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
 }
-#[derive(Insertable)]
+#[derive(Insertable, AsChangeset)]
 #[diesel(table_name = crate::schema::tasks)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 pub struct NewTask {
