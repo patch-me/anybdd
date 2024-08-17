@@ -2,6 +2,7 @@ use chrono::NaiveDateTime;
 use diesel::prelude::*;
 
 #[derive(Debug, Queryable, Selectable)]
+#[derive(Debug, Queryable, Selectable, AsChangeset)]
 #[diesel(table_name = crate::schema::projects)]
 #[diesel(check_for_backend(diesel::mysql::Mysql))]
 pub struct Project {
