@@ -2,10 +2,47 @@ services:
   db:
     image: mariadb
     restart: unless-stopped
+    ports:
+      - "3306:3306"
     environment:
       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
       MARIADB_PASSWORD: ${MARIADB_PASSWORD}
       MARIADB_USER: ${MARIADB_USER}
       MARIADB_DATABASE: ${MARIADB_DATABASE}
-    ports:
-      - "3306:3306"
+    volumes:
+      - ./backup-volume:/backup
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      database:
+        ipv4_address: 172.18.0.2 # Assign a hidden IP address within the network
+
+  diesel-cli:
+    build:
+      context: . # Use the current directory as the build context
+      dockerfile: Dockerfile.diesel
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    volumes:
+      - .:/volume
+    working_dir: /volume
+    command: diesel migration run
+    stdin_open: true # Equivalent to -it (interactive terminal)
+    tty: true # Allocate a pseudo-TTY
+    restart: "no" # Equivalent to --rm to prevent container from restarting
+    networks:
+      - database
+    depends_on:
+      db:
+        condition: service_healthy
+
+networks:
+  database:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16

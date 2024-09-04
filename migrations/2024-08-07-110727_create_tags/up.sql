@@ -1,7 +1,7 @@
 -- Your SQL goes here
 CREATE TABLE tags (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(255) NOT NULL
+  name VARCHAR(255) NOT NULL UNIQUE
 );
 CREATE TABLE task_tags (
   task_id INT NOT NULL,

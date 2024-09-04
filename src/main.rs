@@ -1,33 +1,15 @@
-pub mod models;
-pub mod schema;
-use diesel::mysql::MysqlConnection;
-use diesel::prelude::*;
-use dotenvy::dotenv;
-use models::Project;
+use anybdd::connection::get_connection_pool;
 use std::error::Error;
-use std::env;
-use crate::schema::projects::dsl::*; // Import the `projects` table and associated DSL items
-
+use std::thread;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let mut connection = establish_connection()?; // Handle the Result and unwrap the MysqlConnection
+    let pool = get_connection_pool();
+    let mut threads = vec![];
+    let max_users_to_create = 1;
 
-    let results: Vec<Project> = projects
-        .select(Project::as_select())
-        .load(&mut connection)
-        .expect("Error loading projects");
-    
-    println!("{:?}", results);
-
+    for i in 0..max_users_to_create {
+        let pool = pool.clone();
+        threads.push(thread::spawn({ move || {} }))
+    }
     Ok(())
-}
-
-pub fn establish_connection() -> Result<MysqlConnection, Box<dyn Error>> {
-    dotenv().ok();
-    let database_url = env::var("DATABASE_URL")?;
-    // Use ? instead of expect to propagate the error
-    let connection = MysqlConnection::establish(&database_url)
-        .map_err(|e| format!("Error connecting to {}: {}", database_url, e))?;
-    
-    Ok(connection)
 }
