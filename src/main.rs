@@ -1,18 +1,15 @@
-use anybdd::connection::establish_connection;
-use anybdd::models::Project;
-use anybdd::schema::projects::dsl::*;
-use diesel::prelude::*;
+use anybdd::connection::get_connection_pool;
 use std::error::Error;
+use std::thread;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let mut connection = establish_connection();
+    let pool = get_connection_pool();
+    let mut threads = vec![];
+    let max_users_to_create = 1;
 
-    let results: Vec<Project> = projects
-        .select(Project::as_select())
-        .load(&mut connection)
-        .expect("Error loading projects");
-
-    println!("{:?}", results);
-
+    for i in 0..max_users_to_create {
+        let pool = pool.clone();
+        threads.push(thread::spawn({ move || {} }))
+    }
     Ok(())
 }
