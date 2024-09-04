@@ -2,10 +2,21 @@ services:
   db:
     image: mariadb
     restart: unless-stopped
+    ports:
+      - "3306:3306"
     environment:
       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
       MARIADB_PASSWORD: ${MARIADB_PASSWORD}
       MARIADB_USER: ${MARIADB_USER}
       MARIADB_DATABASE: ${MARIADB_DATABASE}
-    ports:
-      - "3306:3306"
+    volumes:
+      - ./backup-volume:/backup
+    networks:
+      database:
+        ipv4_address: 172.18.0.2 # Assign a hidden IP address within the network
+networks:
+  database:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
