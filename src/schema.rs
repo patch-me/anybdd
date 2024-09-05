@@ -46,6 +46,22 @@ diesel::table! {
 }
 
 diesel::table! {
+    user_github (user_id) {
+        user_id -> Integer,
+        #[max_length = 255]
+        github_token -> Varchar,
+    }
+}
+
+diesel::table! {
+    user_gitlab (user_id) {
+        user_id -> Integer,
+        #[max_length = 255]
+        gitlab_token -> Varchar,
+    }
+}
+
+diesel::table! {
     user_projects (user_id, project_id) {
         user_id -> Integer,
         project_id -> Integer,
@@ -74,6 +90,8 @@ diesel::joinable!(project_tasks -> projects (project_id));
 diesel::joinable!(project_tasks -> tasks (task_id));
 diesel::joinable!(task_tags -> tags (tag_id));
 diesel::joinable!(task_tags -> tasks (task_id));
+diesel::joinable!(user_github -> users (user_id));
+diesel::joinable!(user_gitlab -> users (user_id));
 diesel::joinable!(user_projects -> projects (project_id));
 diesel::joinable!(user_projects -> users (user_id));
 diesel::joinable!(user_tasks -> tasks (task_id));
@@ -85,6 +103,8 @@ diesel::allow_tables_to_appear_in_same_query!(
     tags,
     task_tags,
     tasks,
+    user_github,
+    user_gitlab,
     user_projects,
     user_tasks,
     users,
