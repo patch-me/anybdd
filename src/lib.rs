@@ -1,3 +1,6 @@
+#[cfg(test)]
+mod tests;
+
 pub mod connection;
 pub mod models;
 pub mod project;
