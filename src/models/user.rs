@@ -19,6 +19,4 @@ pub struct User {
 pub struct NewUser {
     pub username: String,
     pub password: String,
-    pub created_at: NaiveDateTime,
-    pub updated_at: NaiveDateTime,
 }
