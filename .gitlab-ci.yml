@@ -1,0 +1,49 @@
+# .gitlab-ci.yml
+
+stages:
+  - build
+  - migrate
+  - test
+
+variables:
+  DATABASE_URL: "mysql://user:password@mariadb:3306/mydb"
+
+services:
+  - name: mariadb:latest
+    alias: mariadb
+    variables:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+
+before_script:
+  - apt-get update -y
+  - apt-get install -y libssl-dev
+
+build:
+  stage: build
+  image: rust:latest
+  script:
+    - cargo build --release
+
+migrate:
+  stage: migrate
+  image: docker:latest
+  services:
+    - docker:20.10-dind
+  script:
+    # Wait until MariaDB is ready
+    - until mysqladmin ping -hmariadb --silent; do echo "Waiting for MariaDB..."; sleep 2; done
+    # Build the Diesel CLI Docker image
+    - docker build -t diesel-cli -f Dockerfile.diesel .
+    # Run Diesel CLI to apply migrations
+    - docker run --network host -e DATABASE_URL="$DATABASE_URL" diesel-cli diesel migration run
+
+test:
+  stage: test
+  image: rust:latest
+  script:
+    # Run tests
+    - sleep 10 # Ensure the database is ready before testing
+    - cargo test

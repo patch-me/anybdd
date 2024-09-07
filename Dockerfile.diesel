@@ -1,6 +1,11 @@
+# Use a slim version of the Rust image
 FROM rust:slim-bookworm
 
+# Set the Cargo target directory to avoid rebuilding dependencies
 ENV CARGO_TARGET_DIR=/root/bin
-RUN apt-get update
-RUN apt-get update && apt-get install -y sudo libmariadb-dev default-libmysqlclient-dev
-RUN cargo install diesel_cli --no-default-features --features mysql
+
+# Install necessary dependencies and Diesel CLI
+RUN apt-get update && \
+    apt-get install -y sudo libmariadb-dev default-libmysqlclient-dev && \
+    cargo install diesel_cli --no-default-features --features mysql && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
