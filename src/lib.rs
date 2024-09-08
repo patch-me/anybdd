@@ -23,11 +23,11 @@ pub trait Read: Sized {
     fn get_by_name(connection: &mut MysqlConnection, value: &String) -> ReadResult<Self, Error>;
 }
 pub trait Create: Sized {
-    fn create(connection: &mut MysqlConnection, item: Self) -> Result<bool, Error>;
+    fn create(connection: &mut MysqlConnection, item: &Self) -> Result<bool, Error>;
 }
 
 pub trait Update {
-    fn update(connection: &mut MysqlConnection, item: &i32) -> Result<bool, Error>;
+    fn update(connection: &mut MysqlConnection, item: &Self) -> Result<bool, Error>;
 }
 
 pub trait Delete {

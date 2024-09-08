@@ -21,7 +21,7 @@ fn test_create_user() {
     };
 
     // Attempt to create a new user in the database
-    match NewUser::create(&mut conn, new_user) {
+    match NewUser::create(&mut conn, &new_user) {
         Ok(true) => {
             println!("User created successfully.");
             assert!(true); // Test passes if user creation succeeds
