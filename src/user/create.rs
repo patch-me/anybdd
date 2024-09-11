@@ -1,11 +1,10 @@
 use crate::models::user::NewUser;
-use crate::Create;
 use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
 use diesel::result::Error;
 
-impl Create for NewUser {
-    fn create(connection: &mut MysqlConnection, value: &Self) -> Result<bool, Error> {
+impl NewUser {
+    pub fn create(connection: &mut MysqlConnection, value: &Self) -> Result<bool, Error> {
         use crate::schema::users::dsl::*;
 
         match diesel::insert_into(users).values(value).execute(connection) {

@@ -1,10 +1,9 @@
 use crate::models::user::User;
-use crate::Update;
 use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
 use diesel::result::Error;
 
-impl Update for User {
+impl User {
     fn update(connection: &mut MysqlConnection, value: &Self) -> Result<bool, Error> {
         use crate::schema::users::dsl::*;
 
