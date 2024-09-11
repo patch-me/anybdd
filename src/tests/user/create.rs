@@ -1,38 +1,32 @@
+use std::sync::Arc;
+
+use diesel::{dsl::count, prelude::*};
+
 // Import necessary modules and functions
 use crate::connection::get_connection_pool;
-use crate::models::user::NewUser;
-use crate::Create; // Assuming Create is a trait implemented for NewUser
-use std::sync::Arc;
+use crate::{models::user::NewUser, schema::users::dsl::*};
 
 #[test]
 fn test_create_user() {
-    // Set up connection pool for the database (using Arc for thread safety)
-    let pool = Arc::new(get_connection_pool());
+  // Set up connection pool for the database (using Arc for thread safety)
+  let pool = Arc::new(get_connection_pool());
 
-    // Get a connection from the pool
-    let mut conn = pool
-        .get()
-        .expect("Failed to get a connection from the pool.");
+  // Get a connection from the pool
+  let mut connection =
+    pool.get().expect("Failed to get a connection from the pool.");
 
-    // Create a new user object
-    let new_user = NewUser {
-        username: String::from("john_doe"),
-        password: String::from("secure_password"),
-    };
+  diesel::delete(users).execute(&mut connection).unwrap();
+  // // Create a new user object
+  NewUser::create(&mut connection, &NewUser {
+    username: String::from("john_doe"),
+    password: String::from("secure_password"),
+  })
+  .unwrap();
 
-    // Attempt to create a new user in the database
-    match NewUser::create(&mut conn, &new_user) {
-        Ok(true) => {
-            println!("User created successfully.");
-            assert!(true); // Test passes if user creation succeeds
-        }
-        Ok(false) => {
-            println!("User was not created.");
-            assert!(false, "User creation returned false unexpectedly.");
-        }
-        Err(e) => {
-            println!("An error occurred: {}", e);
-            assert!(false, "User creation failed with error.");
-        }
-    }
+  let count: i64 =
+    users.select(count(username)).first::<i64>(&mut connection).unwrap();
+
+  assert_eq!(count, 1);
+
+  diesel::delete(users).execute(&mut connection).unwrap();
 }
