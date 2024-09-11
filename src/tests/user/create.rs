@@ -4,7 +4,10 @@ use diesel::{dsl::count, prelude::*};
 
 // Import necessary modules and functions
 use crate::connection::get_connection_pool;
-use crate::{models::user::NewUser, schema::users::dsl::*};
+use crate::{
+  models::user::{NewUser, User},
+  schema::users::dsl::*,
+};
 
 #[test]
 fn test_user_creation() {
@@ -17,7 +20,7 @@ fn test_user_creation() {
 
   diesel::delete(users).execute(&mut connection).unwrap();
   // // Create a new user object
-  NewUser::create(&mut connection, &NewUser {
+  let user_id = User::create(&mut connection, &NewUser {
     username: String::from("john_doe"),
     password: String::from("secure_password"),
   })
@@ -25,6 +28,7 @@ fn test_user_creation() {
 
   let count: i64 =
     users.select(count(username)).first::<i64>(&mut connection).unwrap();
+  println!("{:?}", count);
 
   assert_eq!(count, 1);
 
@@ -42,12 +46,12 @@ fn test_user_duplication() {
 
   diesel::delete(users).execute(&mut connection).unwrap();
   // // Create a new user object
-  NewUser::create(&mut connection, &NewUser {
+  User::create(&mut connection, &NewUser {
     username: String::from("john_doe"),
     password: String::from("secure_password"),
   })
   .unwrap();
-  let result = NewUser::create(&mut connection, &NewUser {
+  let result = User::create(&mut connection, &NewUser {
     username: String::from("john_doe"),
     password: String::from("secure_password"),
   });
