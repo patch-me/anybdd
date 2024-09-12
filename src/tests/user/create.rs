@@ -1,9 +1,7 @@
-use std::sync::Arc;
-
 use diesel::{dsl::count, prelude::*};
 
 // Import necessary modules and functions
-use crate::connection::get_connection_pool;
+use crate::connection::get_connection_url;
 use crate::{
   models::user::{NewUser, User},
   schema::users::dsl::*,
@@ -12,59 +10,50 @@ use crate::{
 #[test]
 fn test_user_creation() {
   // Set up connection pool for the database (using Arc for thread safety)
-  let pool = Arc::new(get_connection_pool());
+  // !TODO d ont delete if table is empty
+  let connection =
+    &mut MysqlConnection::establish(&get_connection_url()).unwrap();
 
-  // Get a connection from the pool
-  let mut connection =
-    pool.get().expect("Failed to get a connection from the pool.");
-
-  diesel::delete(users).execute(&mut connection).unwrap();
+  diesel::delete(users).execute(connection).unwrap();
   // // Create a new user object
-  let user_id = User::create(&mut connection, &NewUser {
+  User::create(connection, &NewUser {
     username: String::from("john_doe"),
     password: String::from("secure_password"),
   })
   .unwrap();
 
   let count: i64 =
-    users.select(count(username)).first::<i64>(&mut connection).unwrap();
-  println!("{:?}", count);
+    users.select(count(username)).first::<i64>(connection).unwrap();
 
   assert_eq!(count, 1);
-
-  diesel::delete(users).execute(&mut connection).unwrap();
 }
 
 #[test]
 fn test_user_duplication() {
   // Set up connection pool for the database (using Arc for thread safety)
-  let pool = Arc::new(get_connection_pool());
-
-  // Get a connection from the pool
-  let mut connection =
-    pool.get().expect("Failed to get a connection from the pool.");
-
-  diesel::delete(users).execute(&mut connection).unwrap();
+  let connection =
+    &mut MysqlConnection::establish(&get_connection_url()).unwrap();
+  diesel::delete(users).execute(connection).unwrap();
   // // Create a new user object
-  User::create(&mut connection, &NewUser {
+  User::create(connection, &NewUser {
     username: String::from("john_doe"),
     password: String::from("secure_password"),
   })
   .unwrap();
-  let result = User::create(&mut connection, &NewUser {
+  let result_sql = User::create(connection, &NewUser {
     username: String::from("john_doe"),
     password: String::from("secure_password"),
   });
-
   // Assert that the result is an error
-  assert!(result.is_err(), "Expected an error, but got success: {:?}", result);
-  let pool = Arc::new(get_connection_pool());
-  let mut connection =
-    pool.get().expect("Failed to get a connection from the pool.");
-  let count: i64 =
-    users.select(count(username)).first::<i64>(&mut connection).unwrap();
+  assert!(
+    result_sql.is_err(),
+    "Expected an error, but got success: {:?}",
+    result_sql
+  );
 
-  assert_eq!(count, 1);
+  let count_user: i64 =
+    users.select(count(username)).first::<i64>(connection).unwrap();
 
-  diesel::delete(users).execute(&mut connection).unwrap();
+  assert_eq!(count_user, 1);
+  diesel::delete(users).execute(connection).unwrap();
 }
