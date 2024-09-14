@@ -11,13 +11,6 @@ use crate::{
 
 #[test]
 fn test_delete_by_name() {
-  // let connection =
-  //   &mut MysqlConnection::establish(&get_connection_url()).unwrap();
-  // let pool = Arc::new(get_connection_pool());
-  //
-  // // Get a connection from the pool
-  // let connection =
-  //   &mut pool.get().expect("Failed to get a connection from the pool.");
   let connection =
     &mut MysqlConnection::establish(&get_connection_url()).unwrap();
   diesel::delete(users).execute(connection).unwrap();
