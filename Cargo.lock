@@ -24,6 +24,7 @@ dependencies = [
  "chrono",
  "diesel",
  "dotenvy",
+ "log",
 ]
 
 [[package]]
