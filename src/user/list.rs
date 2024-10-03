@@ -8,6 +8,15 @@ impl User {
     users.load(connection)
   }
 
+  pub fn list_name_and_id_map(
+    connection: &mut MysqlConnection,
+  ) -> Result<Vec<(i32, String)>, Error> {
+    use crate::schema::users::dsl::*;
+    users
+        .select((id, username)) // select id and username
+        .load(connection)
+  }
+
   pub fn count(connection: &mut MysqlConnection) -> Result<i64, Error> {
     use diesel::dsl::count;
 
